@@ -7,7 +7,7 @@ const assert = require('assert')
 
 const users = ['userFoo', 'userBar', 'userBaz']
 
-const readyReducer = (state = {error: null, users: []}, action) => {
+const initReducer = (state = {error: null, users: []}, action) => {
 
     switch (action.type) {
     case 'FETCH_USERS':
@@ -20,7 +20,7 @@ const readyReducer = (state = {error: null, users: []}, action) => {
     }
 }
 
-const requestingReducer = (state = {}, action) => {
+const inProgressReducer = (state = {}, action) => {
 
     switch (action.type) {
     case 'FETCH_USERS_RESPONSE':
@@ -39,9 +39,9 @@ const requestingReducer = (state = {}, action) => {
     }
 }
 
-const reducer = createMachine({
-    'INIT': readyReducer,
-    'IN_PROGRESS': requestingReducer
+const fetchUsersReducer = createMachine({
+    'INIT': initReducer,
+    'IN_PROGRESS': inProgressReducer
 })
 
 // END FIXTURES
@@ -53,7 +53,7 @@ let prevState = undefined
 
 const test = (type, payload) => {
     prevState = state
-    state = reducer(state, {type, payload})
+    state = fetchUsersReducer(state, {type, payload})
     return test
 }
 

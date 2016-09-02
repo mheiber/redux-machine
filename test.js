@@ -13,7 +13,7 @@ const readyReducer = (state = {error: null, users: []}, action) => {
     case 'FETCH_USERS':
         return Object.assign({}, state, {
             error: null,
-            [become]: 'REQUESTING'
+            [become]: 'IN_PROGRESS'
     })
     default:
         return state
@@ -41,7 +41,7 @@ const requestingReducer = (state = {}, action) => {
 
 const reducer = createMachine({
     'INIT': readyReducer,
-    'REQUESTING': requestingReducer
+    'IN_PROGRESS': requestingReducer
 })
 
 // END FIXTURES
@@ -75,7 +75,7 @@ test('FETCH_USERS_RESPONSE', {users})
 
 test('FETCH_USERS').expect({
     error: null,
-    status: 'REQUESTING',
+    status: 'IN_PROGRESS',
     users: []
 })
 
@@ -87,7 +87,7 @@ test('FETCH_USERS_TIMEOUT').expect({
 
 test('FETCH_USERS').expect({
     error: null,
-    status: 'REQUESTING',
+    status: 'IN_PROGRESS',
     users: []
 })
 

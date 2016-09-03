@@ -1,6 +1,6 @@
 {
   "name": "redux-machine",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "State Machine Helper for Redux",
   "main": "index.js",
   "scripts": {

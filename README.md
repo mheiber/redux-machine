@@ -1,5 +1,9 @@
 # redux-machine
-*A tiny library (19 lines) for creating state machines in Redux apps.*
+
+![redux-machine](http://i63.tinypic.com/2igdbus_th.jpg)
+
+*A tiny library for creating state machines in Redux apps.*
+
 
 redux-machine enables you to create [reducers](http://redux.js.org/docs/basics/Reducers.html) that can transition between different "statuses." These are likes states in a [finite state machine](https://en.wikipedia.org/wiki/Finite-state_machine). The goal is for redux-machine to support complex workflows simply while keeping all state in the redux store. Keeping all state in the store is good because:
 

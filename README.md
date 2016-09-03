@@ -57,7 +57,7 @@ import { become } from 'redux-machine'
 Suppose you are making an API call to fetch users, and want only one instance of this API call to happen at a time. You also want to communicate to the user the status of the API call: `INIT` (initial status, no call in progress) and `IN_PROGRESS`.
 
 You can use redux-machine to have the following status transitions in your reducer:
-
+![status machine for the api-calling example](http://oi68.tinypic.com/wh4i8.jpg)
 - When the status is `INIT` and the action type is `FETCH_USERS`, the machine transitions to `IN_PROGRESS` status.
 - When the status is `IN_PROGRESS` and the action type is `FETCH_USERS_RESPONSE` or `FETCH_USERS_FAIL`, the machine transitions to the `INIT` (initial) status.
 

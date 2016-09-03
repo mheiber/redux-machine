@@ -144,7 +144,7 @@ In the object provided to `createMachine`, the names of the keys matter because 
 
 redux-machine does only one thing: help you model explicit status transitions in reducers. It doesn't prescribe a way of handling asynchronous effects such as API calls. This leaves it open for you to use [no async effects library](http://stackoverflow.com/a/34599594/2482570), [redux-loop](https://github.com/redux-loop/redux-loop), [redux-thunk](https://github.com/gaearon/redux-thunk), [redux-saga](https://github.com/yelouafi/redux-saga), or anything else.
 
-That said, redux-machine fits very naturally with redux-loop, since both enhance how you can use reducers. To modify our example to use redux-machine with redux-loop, just change the initReducer as below:
+That said, redux-machine fits very naturally with redux-loop, since both enhance how you can use reducers. Here's how you could use redux-machine with redux-loop:
 
 ```js
 import { loop, effects } from 'redux-loop'
@@ -175,5 +175,5 @@ const initReducer = (state = {error: null, users: []}, action) => {
 
 
 ```
-> this example presupposes that you've installed the redux-loop middleware and that fetchUsers() returns a promise
+
 

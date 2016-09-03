@@ -51,49 +51,54 @@ const fetchUsersReducer = createMachine({
 let state = undefined
 let prevState = undefined
 
-const test = (type, payload) => {
+const action = (type, payload) => {
     prevState = state
     state = fetchUsersReducer(state, {type, payload})
-    return test
 }
 
-test.expect = (expected, maybeMessage) => assert.deepEqual(state, expected, maybeMessage)
+const expect = (expected, maybeMessage) => assert.deepEqual(state, expected, maybeMessage)
 
 // END HELPERS
 
 // run the reducer and go through several status transitions
 // to test a typical scenario—making an API call
 
-test('DUMMY').expect({
+action('DUMMY')
+expect({
     error: null,
     status: 'INIT',
     users: []
 }, 'Should set initial status to "INIT"')
 
-test('FETCH_USERS_RESPONSE', {users})
-    .expect(prevState, 'Should ignore messages when not handled by current status')
+action('FETCH_USERS_RESPONSE', {users})
+expect(prevState, 'Should ignore messages when not handled by current status')
 
-test('FETCH_USERS').expect({
+action('FETCH_USERS')
+expect({
     error: null,
     status: 'IN_PROGRESS',
     users: []
 })
 
-test('FETCH_USERS_TIMEOUT').expect({
+action('FETCH_USERS_TIMEOUT')
+expect({
     error: 'timeout',
     status: 'INIT',
     users: []
 })
 
-test('FETCH_USERS').expect({
+action('FETCH_USERS')
+expect({
     error: null,
     status: 'IN_PROGRESS',
     users: []
 })
 
-test('FETCH_USERS').expect(prevState)
+action('FETCH_USERS')
+expect(prevState)
 
-test('FETCH_USERS_RESPONSE', {users}).expect({
+action('FETCH_USERS_RESPONSE', {users})
+expect({
     error: null,
     status: 'INIT',
     users

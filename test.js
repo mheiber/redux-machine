@@ -29,9 +29,9 @@ const inProgressReducer = (state = {}, action) => {
             users: action.payload.users,
             [become]: 'INIT'
         })
-    case 'FETCH_USERS_TIMEOUT':
+    case 'FETCH_USERS_FAIL':
         return Object.assign({}, state, {
-            error: 'timeout',
+            error: action.payload,
             [become]: 'INIT'
         })
     default:
@@ -80,7 +80,7 @@ expect({
     users: []
 })
 
-action('FETCH_USERS_TIMEOUT')
+action('FETCH_USERS_FAIL', 'timeout')
 expect({
     error: 'timeout',
     status: 'INIT',

@@ -5,10 +5,9 @@ redux-machine enables you to create [reducers](http://redux.js.org/docs/basics/R
 
 - redux-machine works with time-travel debugging. Time-travel debugging was the main [motivation for building redux itself](https://www.youtube.com/watch?v=xsSnOQynTHs).
 - Debugging is easy because information is in one place (the store).
-- A JSON dump of the current store should be enough for you to reproduce what any user sees.
 - Statuses such are queryable by the user interface. This is helpful if you want to show things to the user such as loading spinners to indicate status
 
-redux-saga and redux-observable also make it easy to create workflows in redux apps. They are more beautiful and powerful than redux-machine, but break the "all state is in the store" paradigm and therefore lack the advantages above.
+redux-saga and redux-observable also make it easy to create workflows in redux apps. They are more beautiful and powerful than redux-machine, but can break the "all state is in the store" paradigm.
 
 ## Install
 
@@ -60,7 +59,7 @@ Suppose you are making an API call to fetch users, and want only one instance of
 You can use redux-machine to have the following status transitions in your reducer:
 
 - When the status is `INIT` and the action type is `FETCH_USERS`, the machine transitions to `IN_PROGRESS` status.
-- When the status is `IN_PROGRESS` and the action type is `FETCH_USERS_RESPONSE` or `FETCH_USERS_TIMEOUT`, the machine transitions to the `INIT` (initial) status.
+- When the status is `IN_PROGRESS` and the action type is `FETCH_USERS_RESPONSE` or `FETCH_USERS_FAIL`, the machine transitions to the `INIT` (initial) status.
 
 I'll walk through how to create the machine in this example. If you prefer to see all the code in one place, it's in `./test.js`.
 
@@ -97,9 +96,9 @@ const inProgressReducer = (state = {}, action) => {
             users: action.payload.users,
             [become]: 'INIT'
         })
-    case 'FETCH_USERS_TIMEOUT':
+    case 'FETCH_USERS_FAIL':
         return Object.assign({}, state, {
-            error: 'timeout',
+            error: 'fail',
             [become]: 'INIT'
         })
     default:
@@ -141,5 +140,40 @@ In the object provided to `createMachine`, the names of the keys matter because 
 
 > `become` is a symbol imported from redux-machine, not a string. See the `import` statement in the example above.
 
-> This example does not include how to make the API calls. redux-machine is a tightly-focused library that does one thing. This leaves it open for you to use [redux-thunk](https://github.com/gaearon/redux-thunk), observables, [redux-saga](https://github.com/yelouafi/redux-saga), or [no library](http://stackoverflow.com/a/34599594/2482570) to perform asynchronous effects such as API calls.
+## Asynchronous Effects
+
+redux-machine does only one thing: help you model explicit status transitions in reducers. It doesn't prescribe a way of handling asynchronous effects such as API calls. This leaves it open for you to use [no async effects library](http://stackoverflow.com/a/34599594/2482570), [redux-loop](https://github.com/redux-loop/redux-loop), [redux-thunk](https://github.com/gaearon/redux-thunk), [redux-saga](https://github.com/yelouafi/redux-saga), or anything else.
+
+That said, redux-machine fits very naturally with redux-loop, since both enhance how you can use reducers. To modify our example to use redux-machine with redux-loop, just change the initReducer as below:
+
+```js
+import { loop, effects } from 'redux-loop'
+import { apiFetchUsers } from '../api'
+
+const getUsers = () => apiFetchUsers.then(users => ({
+    type: 'FETCH_USERS_RESPONSE',
+    payload: { users }
+}))
+
+const initReducer = (state = {error: null, users: []}, action) => {
+
+    switch (action.type) {
+    case 'FETCH_USERS':
+        return loop(
+            // return the next state of the store
+            // and transition to the IN_PROGRESS status
+            Object.assign({}, state, {error: null, [become]: 'IN_PROGRESS'}),
+            // pass getUsers to the redux-loop middleware
+            // The redux-loop middleware will call getUsers(), which
+            // will dispatch a 'FETCH_USERS_RESPONSE' action
+            Effects.promise(getUsers)
+        )
+    default:
+        return state
+    }
+}
+
+
+```
+> this example presupposes that you've installed the redux-loop middleware and that fetchUsers() returns a promise
 

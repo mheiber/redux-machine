@@ -78,9 +78,28 @@ In words:
 - When the status is `INIT` and the action type is `FETCH_USERS`, the machine transitions to `IN_PROGRESS` status.
 - When the status is `IN_PROGRESS` and the action type is `FETCH_USERS_RESPONSE` or `FETCH_USERS_FAIL`, the machine transitions to the `INIT` (initial) status.
 
+## Making Finite State Machine Reducers without a Library
+
+You don't need redux-machine, since you can accomplish almost the same thing as in the example above by defining `fetchUsersReducer` as follows:
+
+```js
+const fetchUsersReducer = (state, action) => {
+    switch (state.status) {
+    case 'INIT':
+        return initReducer(state, action)
+    case 'IN_PROGRESS':
+        return inProgressReducer(state, action)
+    default:
+        return initReducer(state, action)
+    }
+}
+```
+
+The (marginal) advantages of using redux-machine over just using the FSM pattern is that you can more clearly express intent and write slightly less code.
+
 ## Asynchronous Effects
 
-redux-machine does only one thing: help you model explicit status transitions in reducers. It doesn't prescribe a way of handling asynchronous effects such as API calls. This leaves it open for you to use [no async effects library](http://stackoverflow.com/a/34599594/2482570), [redux-loop](https://github.com/redux-loop/redux-loop), [redux-thunk](https://github.com/gaearon/redux-thunk), [redux-saga](https://github.com/yelouafi/redux-saga), or anything else.
+redux-machine doesn't prescribe a way of handling asynchronous effects such as API calls. This leaves it open for you to use [no async effects library](http://stackoverflow.com/a/34599594/2482570), [redux-loop](https://github.com/redux-loop/redux-loop), [redux-thunk](https://github.com/gaearon/redux-thunk), [redux-saga](https://github.com/yelouafi/redux-saga), or anything else.
 
 That said, redux-machine fits very naturally with other tools which enhance the expressiveness of reducers, such as redux-loop and redux-side-effect. Here's how you could use redux-machine with redux-loop:
 

@@ -119,7 +119,7 @@ const initReducer = (state = {error: null, users: []}, action) => {
         return loop(
             // return the next state of the store
             // and transition to the IN_PROGRESS status
-            Object.assign({}, state, {error: null, [become]: 'IN_PROGRESS'}),
+            Object.assign({}, state, {error: null, status: 'IN_PROGRESS'}),
             // pass getUsers to the redux-loop middleware
             // The redux-loop middleware will call getUsers(), which
             // will dispatch a 'FETCH_USERS_RESPONSE' action

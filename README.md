@@ -70,7 +70,7 @@ I'll walk through how to create the machine in this example. If you prefer to se
 ### `import` redux-machine
 
 ```js
-import { createMachine, become } = from './index.js'
+import { createMachine, become } from './index.js'
 ```
 
 ### Create Reducers
@@ -151,7 +151,7 @@ redux-machine does only one thing: help you model explicit status transitions in
 That said, redux-machine fits very naturally with redux-loop, since both enhance how you can use reducers. Here's how you could use redux-machine with redux-loop:
 
 ```js
-import { loop, effects } from 'redux-loop'
+import { loop, Effects } from 'redux-loop'
 import { apiFetchUsers } from '../api'
 
 const getUsers = () => apiFetchUsers.then(users => ({

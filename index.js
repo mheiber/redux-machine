@@ -12,4 +12,4 @@ var createMachine = function(reducersObject) {
     }
 }
 
-module.exports = {createMachine: createMachine}
+module.exports = {createMachine: createMachine, become: 'status' /* for backwards compatibility */}

@@ -2,13 +2,13 @@
 
 var createMachine = function(reducersObject) {
     return function(state, action) {
-        const nextState = state ? Object.assign({}, state) : {}
-        nextState.status = nextState.status || 'INIT'
-        var currentReducer = reducersObject[nextState.status]
-        if (!currentReducer) {
-            throw new Error('reducersObject missing reducer for status ' + nextState.status)
-        }
-        return currentReducer(nextState, action)
+      var status = (state && state.status) ? state.status : 'INIT'
+      var reducer = reducersObject[status]
+      if (!reducer) {
+          throw new Error('reducersObject missing reducer for status ' + status)
+      }
+      const nextState = reducer(state, action)
+      return Object.assign({}, nextState, {'status': nextState.status || status})
     }
 }
 

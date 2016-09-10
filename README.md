@@ -31,7 +31,6 @@ const fetchUsersReducer = createMachine({
 ```
 
 The reducer returned by `createMachine` will act like `initReducer` when its status is `INIT` and will act like `inProgressReducer` when the status is `IN_PROGRESS`. If the store's `state.status` is undefined, the reducer for `INIT` is used (so it's a good idea to provide a reducer for the `INIT` status).
->>>>>>> update API
 
 `initReducer` and `inProgressReducer` can do status transitions by setting `state.status`:
 

@@ -1,22 +1,15 @@
 "use strict"
 
-var become = Symbol('become')
-
 var createMachine = function(reducersObject) {
-    var status = 'INIT'
-    var currentReducer = reducersObject['INIT']
-    if (!currentReducer) {
-        throw new Error('reducersObject must have INIT reducer')
-    }
     return function(state, action) {
-        var nextState = currentReducer(state, action)
-        if (nextState[become]) {
-            status = nextState[become]
-            currentReducer = reducersObject[status]
-        }
-        var nextStateWithStatus = Object.assign({}, state, nextState, {status: status})
-        return nextStateWithStatus
+      var status = (state && state.status) ? state.status : 'INIT'
+      var reducer = reducersObject[status]
+      if (!reducer) {
+          throw new Error('reducersObject missing reducer for status ' + status)
+      }
+      const nextState = reducer(state, action)
+      return Object.assign({}, nextState, {'status': nextState.status || status})
     }
 }
 
-module.exports = {createMachine: createMachine, become: become}
+module.exports = {createMachine: createMachine, become: 'status' /* for backwards compatibility */}

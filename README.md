@@ -132,4 +132,8 @@ const initReducer = (state = {error: null, users: []}, action) => {
 
 ```
 
+## Examples
 
+[Cancellable Counter](https://github.com/mheiber/redux-funk-examples)
+
+[Shopping Cart](https://github.com/mheiber/redux-funk-examples)

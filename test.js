@@ -55,7 +55,7 @@ test('should transition between states', t => {
     let prevState = undefined
     const store = createStore(fetchUsersReducer, state)
 
-    const expect = (expected, maybeMessage) => t.deepEquals(state, expected, maybeMessage)
+    const expectState = (expected, maybeMessage) => t.deepEquals(state, expected, maybeMessage)
 
     const action = (type, payload) => {
         prevState = state
@@ -64,36 +64,36 @@ test('should transition between states', t => {
     }
 
     action('DUMMY')
-    expect({
+    expectState({
         status: 'INIT',
     }, 'Should set initial status to "INIT"')
 
     action('FETCH_USERS_RESPONSE', {users})
-    expect(prevState, 'Should ignore messages when not handled by current status')
+    expectState(prevState, 'Should ignore messages when not handled by current status')
 
     action('FETCH_USERS')
-    expect({
+    expectState({
         error: null,
         status: 'IN_PROGRESS'
     })
 
     action('FETCH_USERS_FAIL', 'timeout')
-    expect({
+    expectState({
         error: 'timeout',
         status: 'INIT'
     })
 
     action('FETCH_USERS')
-    expect({
+    expectState({
         error: null,
         status: 'IN_PROGRESS'
     })
 
     action('FETCH_USERS')
-    expect(prevState)
+    expectState(prevState)
 
     action('FETCH_USERS_RESPONSE', {users})
-    expect({
+    expectState({
         error: null,
         status: 'INIT',
         users

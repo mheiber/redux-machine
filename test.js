@@ -1,7 +1,8 @@
 "use strict"
 
-const { createMachine } = require('./index.js')
+const { createStore } = require('redux')
 const test = require('tape')
+const { createMachine } = require('./index.js')
 
 // BEGIN FIXTURES
 
@@ -52,12 +53,14 @@ test('should transition between states', t => {
 
     let state = undefined
     let prevState = undefined
+    const store = createStore(fetchUsersReducer, state)
 
     const expect = (expected, maybeMessage) => t.deepEquals(state, expected, maybeMessage)
 
     const action = (type, payload) => {
         prevState = state
-        state = fetchUsersReducer(state, {type, payload})
+        store.dispatch({type, payload})
+        state = store.getState()
     }
 
     action('DUMMY')

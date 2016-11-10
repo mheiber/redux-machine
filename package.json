@@ -4,7 +4,7 @@
   "description": "a tiny lib for creating state machines as swappable Redux reducers",
   "main": "index.js",
   "scripts": {
-    "test": "node test.js"
+    "test": "node test.js | faucet"
   },
   "repository": {
     "type": "git",

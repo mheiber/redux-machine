@@ -24,7 +24,11 @@
   "homepage": "https://github.com/mheiber/redux-machine#readme",
   "devDependencies": {
     "faucet": "^0.0.1",
+    "immutable": "^3.8.1",
     "redux": "^3.6.0",
     "tape": "^4.6.2"
+  },
+  "dependencies": {
+    "immutable": "^3.8.1"
   }
 }

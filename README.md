@@ -2,7 +2,9 @@
 
 ![redux-machine](http://i63.tinypic.com/2igdbus_th.jpg)
 
-*A tiny lib (12 lines) for creating state machines as swappable Redux reducers*
+*A tiny lib (16 lines) for creating state machines as swappable Redux reducers*
+
+> This is the version of this library to use when your Redux store state is an [Immutable JS](https://facebook.github.io/immutable-js/) [Map](https://facebook.github.io/immutable-js/docs/#/Map). See also the [non-immutable-js version of redux-machine](https://github.com/mheiber/redux-machine).
 
 redux-machine enables you to create [reducers](http://redux.js.org/docs/basics/Reducers.html) that can transition between different "statuses." These are likes states in a [finite state machine](https://en.wikipedia.org/wiki/Finite-state_machine). The goal is for redux-machine to support complex workflows simply while keeping all state in the redux store. Keeping all state in the store is good because:
 
@@ -38,10 +40,9 @@ The reducer returned by `createMachine` will act like `initReducer` when its sta
 const initReducer = (state = {error: null, users: []}, action) => {
     switch (action.type) {
     case 'FETCH_USERS':
-        return Object.assign({}, state, {
-            error: null,
-            // transition to a different status!
-            status: 'IN_PROGRESS'
+        return state
+                .set('error', null)
+                .set('status', 'IN_PROGRESS')
     })
     default:
         return state
@@ -51,18 +52,19 @@ const initReducer = (state = {error: null, users: []}, action) => {
 const inProgressReducer = (state = {}, action) => {
     switch (action.type) {
     case 'FETCH_USERS_RESPONSE':
-        return Object.assign({}, state, {
-            error: null,
-            users: action.payload.users,
-            // transition to a different status!
-            status: 'INIT'
+        return state.withMutations(map => {
+            return map
+                .set('error', null)
+                .set('users', action.payload.users)
+                .set('status', 'INIT')
         })
     case 'FETCH_USERS_FAIL':
-        return Object.assign({}, state, {
-            error: action.payload.error,
-            // transition to a different status!
-            status: 'INIT'
-        })
+        return state
+                .set('error', action.payload.error)
+                .set('status', 'INIT')
+        return state
+                .set('error', action.payload.error)
+                .set('status', 'INIT')
     default:
         return state
     }
@@ -83,7 +85,7 @@ You don't need redux-machine, since you can accomplish almost the same thing as 
 
 ```js
 const fetchUsersReducer = (state, action) => {
-    switch (state.status) {
+    switch (state.get(status)) {
     case 'INIT':
         return initReducer(state, action)
     case 'IN_PROGRESS':
@@ -96,44 +98,10 @@ const fetchUsersReducer = (state, action) => {
 
 The (marginal) advantages of using redux-machine over just using the FSM pattern is that you can more clearly express intent and write slightly less code.
 
-## Asynchronous Effects
-
-redux-machine doesn't prescribe a way of handling asynchronous effects such as API calls. This leaves it open for you to use [no async effects library](http://stackoverflow.com/a/34599594/2482570), [redux-loop](https://github.com/redux-loop/redux-loop), [redux-thunk](https://github.com/gaearon/redux-thunk), [redux-saga](https://github.com/yelouafi/redux-saga), or anything else.
-
-That said, redux-machine fits very naturally with other tools which enhance the expressiveness of reducers, such as redux-loop and redux-side-effect. Here's how you could use redux-machine with redux-loop:
-
-```js
-import { loop, Effects } from 'redux-loop'
-import { apiFetchUsers } from '../api'
-
-const getUsers = () => apiFetchUsers.then(users => ({
-    type: 'FETCH_USERS_RESPONSE',
-    payload: { users }
-}))
-
-const initReducer = (state = {error: null, users: []}, action) => {
-
-    switch (action.type) {
-    case 'FETCH_USERS':
-        return loop(
-            // return the next state of the store
-            // and transition to the IN_PROGRESS status
-            Object.assign({}, state, {error: null, status: 'IN_PROGRESS'}),
-            // pass getUsers to the redux-loop middleware
-            // The redux-loop middleware will call getUsers(), which
-            // will dispatch a 'FETCH_USERS_RESPONSE' action
-            Effects.promise(getUsers)
-        )
-    default:
-        return state
-    }
-}
-
-
-```
-
 ## Examples
 
 [Cancellable Counter](https://github.com/mheiber/redux-funk-examples)
 
 [Shopping Cart](https://github.com/mheiber/redux-funk-examples)
+
+> These examples use the [non-immutable-js version](https://github.com/mheiber/redux-machine) of redux-machine.

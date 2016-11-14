@@ -3,37 +3,37 @@
 const { createStore } = require('redux')
 const test = require('tape')
 const { createMachine } = require('./index.js')
+const { Map, List } = require('immutable')
 
 // BEGIN FIXTURES
 
-const users = ['userFoo', 'userBar', 'userBaz']
+const users = List(['userFoo', 'userBar', 'userBaz'])
 
-const initReducer = (state = {}, action) => {
+const initReducer = (state = Map(), action) => {
     switch (action.type) {
     case 'FETCH_USERS':
-        return Object.assign({}, state, {
-            error: null,
-            status: 'IN_PROGRESS'
-    })
+        return state
+                .set('error', null)
+                .set('status', 'IN_PROGRESS')
     default:
         return state
     }
 }
 
-const inProgressReducer = (state = {}, action) => {
+const inProgressReducer = (state = Map(), action) => {
 
     switch (action.type) {
     case 'FETCH_USERS_RESPONSE':
-        return Object.assign({}, state, {
-            error: null,
-            users: action.payload.users,
-            status: 'INIT'
+        return state.withMutations(map => {
+            map
+                .set('error', null)
+                .set('users', action.payload.users)
+                .set('status', 'INIT')
         })
     case 'FETCH_USERS_FAIL':
-        return Object.assign({}, state, {
-            error: action.payload,
-            status: 'INIT'
-        })
+        return state
+                .set('error', action.payload)
+                .set('status', 'INIT')
     default:
         return state
     }
@@ -51,11 +51,11 @@ const fetchUsersReducer = createMachine({
 
 test('should transition between states', t => {
 
-    let state = undefined
+    let state = Map()
     let prevState = undefined
     const store = createStore(fetchUsersReducer, state)
 
-    const expectState = (expected, maybeMessage) => t.deepEquals(state, expected, maybeMessage)
+    const expectState = (expected, maybeMessage) => t.deepEquals(state.toJS(), expected.toJS(), maybeMessage)
 
     const action = (type, payload) => {
         prevState = state
@@ -64,46 +64,46 @@ test('should transition between states', t => {
     }
 
     action('DUMMY')
-    expectState({
+    expectState(Map({
         status: 'INIT',
-    }, 'Should set initial status to "INIT"')
+    }), 'Should set initial status to "INIT"')
 
     action('FETCH_USERS_RESPONSE', {users})
     expectState(prevState, 'Should ignore messages when not handled by current status')
 
     action('FETCH_USERS')
-    expectState({
+    expectState(Map({
         error: null,
         status: 'IN_PROGRESS'
-    })
+    }))
 
     action('FETCH_USERS_FAIL', 'timeout')
-    expectState({
+    expectState(Map({
         error: 'timeout',
         status: 'INIT'
-    })
+    }))
 
     action('FETCH_USERS')
-    expectState({
+    expectState(Map({
         error: null,
         status: 'IN_PROGRESS'
-    })
+    }))
 
     action('FETCH_USERS')
     expectState(prevState)
 
     action('FETCH_USERS_RESPONSE', {users})
-    expectState({
+    expectState(Map({
         error: null,
         status: 'INIT',
         users
-    })
+    }))
 
     t.end()
 })
 
 test('should error on status not found', t => {
-    let store = {status: 'STATUS_NOT_IN_CREATE_MACHINE'}
+    let store = Map({status: 'STATUS_NOT_IN_CREATE_MACHINE'})
     const reducer = createMachine({})
     let error
     try {
@@ -119,4 +119,23 @@ test('should error on status not found', t => {
     )
 
     t.end()
+})
+
+test('should error when plain JS object used for state', t => {
+    let error
+    const reducer = createMachine({})
+    try {
+        reducer({}, {type: 'DUMMY'})
+    }
+    catch(err) {
+        error = err
+    }
+
+    t.equals(
+        error.message,
+        'Expected state to be an ImmutableJS Map.'
+        + ' If your state is a plain JS object, use redux-machine instead'
+    )
+
+    t.end()   
 })

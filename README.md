@@ -102,42 +102,12 @@ The (marginal) advantages of using redux-machine over just using the FSM pattern
 
 redux-machine doesn't prescribe a way of handling asynchronous effects such as API calls. This leaves it open for you to use [no async effects library](http://stackoverflow.com/a/34599594/2482570), [redux-loop](https://github.com/redux-loop/redux-loop), [redux-thunk](https://github.com/gaearon/redux-thunk), [redux-saga](https://github.com/yelouafi/redux-saga), or anything else.
 
-That said, redux-machine fits very naturally with other tools which enhance the expressiveness of reducers, such as redux-loop and redux-side-effect. Here's how you could use redux-machine with redux-loop:
-
-```js
-import { loop, Effects } from 'redux-loop'
-import { apiFetchUsers } from '../api'
-
-const getUsers = () => apiFetchUsers.then(users => ({
-    type: 'FETCH_USERS_RESPONSE',
-    payload: { users }
-}))
-
-const initReducer = (state = {error: null, users: []}, action) => {
-
-    switch (action.type) {
-    case 'FETCH_USERS':
-        return loop(
-            // return the next state of the store
-            // and transition to the IN_PROGRESS status
-            Object.assign({}, state, {error: null, status: 'IN_PROGRESS'}),
-            // pass getUsers to the redux-loop middleware
-            // The redux-loop middleware will call getUsers(), which
-            // will dispatch a 'FETCH_USERS_RESPONSE' action
-            Effects.promise(getUsers)
-        )
-    default:
-        return state
-    }
-}
-
-
-```
-
 ## Examples
 
-See the [Redux Funk Examples repo](https://github.com/mheiber/redux-funk-examples) for examples using redux-machine with [redux-funk](https://github.com/mheiber/redux-funk) for async effects:
+See the [Redux Funk Examples repo](https://github.com/mheiber/redux-funk-examples) for examples using redux-machine and [redux-funk](https://github.com/mheiber/redux-funk):
 
 - [Shopping Cart Example](https://github.com/mheiber/redux-funk-examples/blob/master/examples/shopping-cart/src/reducers/cart.js#L62)
 
 - [Cancellable Counter Example](https://github.com/mheiber/redux-funk-examples/blob/master/examples/cancellable-counter/src/reducers/counter.js#L50)
+
+See the [Redux Saga Examples](https://github.com/yelouafi/redux-saga/tree/master/examples) for comparison.

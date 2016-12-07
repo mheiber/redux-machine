@@ -4,6 +4,8 @@
 
 *A tiny lib (12 lines) for creating state machines as swappable Redux reducers*
 
+> If you are using [Immutable JS](https://facebook.github.io/immutable-js/) in your stores, see [redux-machine-immutable](https://github.com/mheiber/redux-machine-immutable).
+
 redux-machine enables you to create [reducers](http://redux.js.org/docs/basics/Reducers.html) that can transition between different "statuses." These are likes states in a [finite state machine](https://en.wikipedia.org/wiki/Finite-state_machine). The goal is for redux-machine to support complex workflows simply while keeping all state in the redux store. Keeping all state in the store is good because:
 
 - redux-machine works with time-travel debugging. Time-travel debugging was the main [motivation for building redux itself](https://www.youtube.com/watch?v=xsSnOQynTHs).
@@ -134,6 +136,8 @@ const initReducer = (state = {error: null, users: []}, action) => {
 
 ## Examples
 
-[Cancellable Counter](https://github.com/mheiber/redux-funk-examples)
+See the [Redux Funk Examples repo](https://github.com/mheiber/redux-funk-examples) for examples using redux-machine with [redux-funk](https://github.com/mheiber/redux-funk) for async effects:
 
-[Shopping Cart](https://github.com/mheiber/redux-funk-examples)
+- [Shopping Cart Example](https://github.com/mheiber/redux-funk-examples/blob/master/examples/shopping-cart/src/reducers/cart.js#L62)
+
+- [Cancellable Counter Example](https://github.com/mheiber/redux-funk-examples/blob/master/examples/cancellable-counter/src/reducers/counter.js#L50)

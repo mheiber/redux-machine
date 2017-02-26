@@ -8,6 +8,9 @@ var createMachine = function(reducersObject) {
           throw new Error('reducersObject missing reducer for status ' + status)
       }
       const nextState = reducer(state, action)
+      if (nextState === state) {
+          return state
+      }
       return Object.assign({}, nextState, {'status': nextState.status || status})
     }
 }

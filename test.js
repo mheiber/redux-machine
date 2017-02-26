@@ -68,6 +68,10 @@ test('should transition between states', t => {
         status: 'INIT',
     }, 'Should set initial status to "INIT"')
 
+    action('DUMMY AGAIN')
+    
+    t.equals(state, prevState, 'Should not change the state when an action is unhandled')
+
     action('FETCH_USERS_RESPONSE', {users})
     expectState(prevState, 'Should ignore messages when not handled by current status')
 

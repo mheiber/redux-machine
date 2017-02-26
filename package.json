@@ -1,6 +1,6 @@
 {
   "name": "redux-machine",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "a tiny lib for creating state machines as swappable Redux reducers",
   "main": "index.js",
   "scripts": {

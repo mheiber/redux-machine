@@ -100,7 +100,7 @@ The (marginal) advantages of using redux-machine over just using the FSM pattern
 
 ## Asynchronous Effects
 
-redux-machine doesn't prescribe a way of handling asynchronous effects such as API calls. This leaves it open for you to use [no async effects library](http://stackoverflow.com/a/34599594/2482570), [redux-loop](https://github.com/redux-loop/redux-loop), [redux-thunk](https://github.com/gaearon/redux-thunk), [redux-saga](https://github.com/yelouafi/redux-saga), [redux-funk]([redux-funk](https://github.com/mheiber/redux-funk) or [anything else](https://github.com/markerikson/redux-ecosystem-links/blob/master/side-effects.md).
+redux-machine doesn't prescribe a way of handling asynchronous effects such as API calls. This leaves it open for you to use [no async effects library](http://stackoverflow.com/a/34599594/2482570), [redux-loop](https://github.com/redux-loop/redux-loop), [redux-thunk](https://github.com/gaearon/redux-thunk), [redux-saga](https://github.com/yelouafi/redux-saga), [redux-funk](https://github.com/mheiber/redux-funk) or [anything else](https://github.com/markerikson/redux-ecosystem-links/blob/master/side-effects.md).
 
 ## Examples
 

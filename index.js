@@ -1,18 +1,22 @@
 "use strict"
 
-var createMachine = function(reducersObject) {
-    return function(state, action) {
-      var status = (state && state.status) ? state.status : 'INIT'
-      var reducer = reducersObject[status]
-      if (!reducer) {
-          throw new Error('reducersObject missing reducer for status ' + status)
-      }
-      const nextState = reducer(state, action)
-      if (nextState === state) {
-          return state
-      }
-      return Object.assign({}, nextState, {'status': nextState.status || status})
-    }
+function createMachine(lifecycleHooks) {
+  const defaultLifecycleHooks = {
+    getStatus:(state,initialStatus)=>(state && state.status) || initialStatus,
+    getReducer:(status)=>{},
+    getNextState:(state, nextState,status)=>state === nextState ? state : Object.assign({status}, nextState)
+  };
+  const {getNextState, getStatus, getReducer} = Object.assign(defaultLifecycleHooks, lifecycleHooks);
+  const INIT = 'INIT';
+  return function stateMachine(state, action){
+    const status = getStatus(state, INIT);
+    const reducer = getReducer(status);
+    if(!isFunction(reducer)){invalidReducerError(status);}
+    return getNextState(state, reducer(state, action), status);
+  }
 }
 
-module.exports = {createMachine: createMachine, become: 'status' /* for backwards compatibility */}
+function invalidReducerError(status){throw new Error(`Invalid reducer for ${status}. It must be a function.`);}
+function isFunction(arg){return typeof arg === 'function';}
+
+module.exports = {createMachine, become: 'status' /* for backwards compatibility */}

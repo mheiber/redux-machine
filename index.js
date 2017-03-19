@@ -3,8 +3,8 @@
 function createMachine(lifecycleHooks) {
   const defaultLifecycleHooks = {
     getStatus:(state,initialStatus)=>(state && state.status) || initialStatus,
-    getReducer:(reducersObject,status)=>{},
-    getNextState:(state,nextState,status)=>state === nextState ? state : Object.assign({status}, nextState)
+    getReducer:(status)=>{},
+    getNextState:(state, nextState,status)=>state === nextState ? state : Object.assign({status}, nextState)
   };
   const {getNextState, getStatus, getReducer} = Object.assign(defaultLifecycleHooks, lifecycleHooks);
   const INIT = 'INIT';
@@ -16,7 +16,7 @@ function createMachine(lifecycleHooks) {
   }
 }
 
-function invalidTypeError(status){throw new Error(`Invalid reducer for ${status}. It must be a function.`);}
+function invalidReducerError(status){throw new Error(`Invalid reducer for ${status}. It must be a function.`);}
 function isFunction(arg){return typeof arg === 'function';}
 
-module.exports = {createMachine: createMachine, become: 'status' /* for backwards compatibility */}
+module.exports = {createMachine, become: 'status' /* for backwards compatibility */}

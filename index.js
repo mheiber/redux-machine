@@ -7,7 +7,7 @@ var createMachine = function(reducersObject) {
       if (!reducer) {
           throw new Error('reducersObject missing reducer for status ' + status)
       }
-      const nextState = reducer(state, action)
+      const nextState = reducer.apply(undefined, arguments);
       if (nextState === state) {
           return state
       }

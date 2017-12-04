@@ -105,7 +105,7 @@ test('should transition between states', t => {
     t.end()
 })
 
-test('should pass all arguments to inner reducers', t => {
+test('should be able to pass an extraArgument to inner reducers', t => {
     const configReducer =  (state = {}, action) => state;
     const gameReducer = (state = {}, action, isMuted) => {
         switch (action.type) {

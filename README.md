@@ -99,7 +99,8 @@ const fetchUsersReducer = (state, action) => {
 The (marginal) advantages of using redux-machine over just using the FSM pattern is that you can more clearly express intent and write slightly less code.
 
 ## Supporting an Extra Argument
-redux-machine supports to passing an extra argument to state reducers, for cases where a state reducer requires a third argument for other state it dpeneds on. 
+
+redux-machine supports to passing an extra argument to state reducers, for cases where a state reducer requires [a third argument for other state it depends on](https://github.com/reactjs/redux/blob/master/docs/faq/Reducers.md#how-do-i-share-state-between-two-reducers-do-i-have-to-use-combinereducers).
 
 ## Asynchronous Effects
 

@@ -138,7 +138,7 @@ test('should be able to pass an extraArgument to inner reducers', t => {
           audio: 'ON'
         },
         config: {}
-    }, 'Should turn game audio "ON" if isMuted !== true')
+    })
 
     const silentStore = createStore(fsmReducer, {
       config: {
@@ -156,7 +156,7 @@ test('should be able to pass an extraArgument to inner reducers', t => {
         config: {
           isMuted: true
         }
-    }, 'Should turn game audio "OFF" if isMuted === true')
+    })
 
     t.end()
 })
@@ -179,3 +179,4 @@ test('should error on status not found', t => {
 
     t.end()
 })
+

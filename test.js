@@ -69,7 +69,6 @@ test('should transition between states', t => {
     }, 'Should set initial status to "INIT"')
 
     action('DUMMY AGAIN')
-    
     t.equals(state, prevState, 'Should not change the state when an action is unhandled')
 
     action('FETCH_USERS_RESPONSE', {users})
@@ -102,6 +101,62 @@ test('should transition between states', t => {
         status: 'INIT',
         users
     })
+
+    t.end()
+})
+
+test('should be able to pass an extraArgument to inner reducers', t => {
+    const configReducer =  (state = {}, action) => state;
+    const gameReducer = (state = {}, action, isMuted) => {
+        switch (action.type) {
+        case 'START':
+            const audio = (isMuted === true) ? 'OFF' : 'ON'
+            return Object.assign({}, state, {
+                audio: audio
+        })
+        default:
+            return state
+        }
+    }
+    const innerReducer = (state = {}, action) => {
+        const isMuted = state.config ? state.config.isMuted : undefined
+        return {
+          'game': gameReducer(state.game, action, isMuted),
+          'config': configReducer(state.config, action)
+        }
+    }
+    const fsmReducer = createMachine({
+        'INIT': innerReducer
+    });
+    const store = createStore(fsmReducer, undefined)
+    store.dispatch({
+      type: 'START'
+    })
+    t.deepEquals(store.getState(), {
+        status: 'INIT',
+        game: {
+          audio: 'ON'
+        },
+        config: {}
+    }, 'Should turn game audio "ON" if isMuted !== true')
+
+    const silentStore = createStore(fsmReducer, {
+      config: {
+        isMuted: true
+      }
+    })
+    silentStore.dispatch({
+      type: 'START'
+    })
+    t.deepEquals(silentStore.getState(), {
+        status: 'INIT',
+        game: {
+          audio: 'OFF'
+        },
+        config: {
+          isMuted: true
+        }
+    }, 'Should turn game audio "OFF" if isMuted === true')
 
     t.end()
 })
